@@ -1,0 +1,184 @@
+* { box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, sans-serif;
+  margin: 0;
+  background: #f4f5f7;
+  color: #111827;
+}
+
+.page-center {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.card {
+  background: #fff;
+  padding: 32px 28px;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 420px;
+}
+
+.card h2 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  margin: 14px 0 6px;
+  font-size: 14px;
+  color: #444;
+}
+
+input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.hint {
+  font-size: 12px;
+  color: #777;
+  margin-top: 4px;
+}
+
+.error {
+  color: #dc2626;
+  margin-top: 12px;
+  font-size: 14px;
+}
+
+.result {
+  margin-top: 20px;
+  padding: 16px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-radius: 10px;
+  word-break: break-word;
+}
+
+.result a {
+  color: #2563eb;
+  font-weight: 600;
+}
+
+.result-error {
+  background: #fef2f2;
+  border-color: #fecaca;
+}
+
+code {
+  background: #eee;
+  padding: 2px 5px;
+  border-radius: 4px;
+}
+
+/* Display / classroom-screen page */
+.display-page {
+  min-height: 100vh;
+  background: #111827;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
+}
+
+.display-page h1 {
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.display-page .sub {
+  color: #9ca3af;
+  margin-bottom: 24px;
+}
+
+.qr-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 16px;
+  display: inline-block;
+}
+
+.qr-box img {
+  width: 320px;
+  height: 320px;
+  max-width: 70vw;
+  max-height: 70vw;
+  display: block;
+}
+
+.bar-bg {
+  width: 320px;
+  max-width: 70vw;
+  height: 6px;
+  background: #374151;
+  border-radius: 3px;
+  margin-top: 14px;
+  overflow: hidden;
+}
+
+.bar {
+  height: 100%;
+  background: #3b82f6;
+  transition: width 1s linear;
+}
+
+.timer {
+  margin-top: 20px;
+  font-size: 20px;
+  color: #93c5fd;
+  font-variant-numeric: tabular-nums;
+}
+
+.count {
+  margin-top: 8px;
+  color: #6ee7b7;
+  font-size: 16px;
+}
+
+.ended {
+  font-size: 28px;
+  color: #f87171;
+}
+
+.download-btn {
+  display: inline-block;
+  margin-top: 24px;
+  background: #10b981;
+  color: #fff;
+  text-decoration: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+}
