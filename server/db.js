@@ -1,8 +1,3 @@
-// Lightweight JSON-file-backed store. No native compilation required —
-// this avoids the Python/Visual-Studio build-tools headache that
-// better-sqlite3 (and other native modules) can cause on Windows.
-// Fine for classroom-scale usage (tens to low hundreds of submissions per session).
-
 const fs = require('fs');
 const path = require('path');
 

@@ -4,14 +4,6 @@ const config = require('../config');
 const { now, signOpenProof, verifyOpenProof } = require('../utils');
 
 module.exports = function registerAttendanceRoutes(app) {
-  // ============ STUDENT: check a scanned link (returns JSON; React renders it) ============
-  //
-  // Many students scan the SAME live QR code at roughly the same moment —
-  // that's the normal, expected case in a real classroom — so this route
-  // does not restrict a token to a single opener. The two real defenses
-  // against abuse are (1) the 30-second expiry, which makes a
-  // screenshotted/forwarded code useless almost immediately, and (2) the
-  // Student-ID + device-cookie checks in /api/submit below.
   app.get('/api/scan/:token', (req, res) => {
     const t = now();
     const token = db.tokens.get(req.params.token);
@@ -32,9 +24,6 @@ module.exports = function registerAttendanceRoutes(app) {
     const openedAt = verifyOpenProof(req.params.token, req.cookies[proofCookieName]);
 
     if (openedAt === null) {
-      // First time this browser has opened this specific token.
-      // No grace period for opening — once the code rotates, it's dead for
-      // anyone who hasn't already opened it.
       if (t > token.expiresAt) {
         return res.json({ status: 'error', message: 'This QR code has expired. Please scan the current code on the screen.' });
       }
@@ -46,10 +35,6 @@ module.exports = function registerAttendanceRoutes(app) {
       });
       return res.json({ status: 'form' });
     }
-
-    // This browser already opened this token before — let them keep filling
-    // out the form even if the QR has since rotated, as long as they're
-    // still within their personal grace period.
     if (t > openedAt + config.SCAN_GRACE_SECONDS * 1000) {
       return res.json({ status: 'error', message: 'Time expired. Please scan the current QR code on the screen and try again.' });
     }
@@ -73,9 +58,6 @@ module.exports = function registerAttendanceRoutes(app) {
       return res.status(400).json({ error: 'Attendance for this class has closed.' });
     }
 
-    // Confirm this request really came from a browser that opened this
-    // token in time (defends against directly POSTing without ever loading
-    // the scan page).
     const proofCookieName = `scan_${token}`;
     const openedAt = verifyOpenProof(token, req.cookies[proofCookieName]);
     if (openedAt === null) {

@@ -1,16 +1,3 @@
-// Lightweight JSON-file-backed store. No native compilation required — this
-// avoids the Python/Visual-Studio build-tools headache that native modules
-// (like better-sqlite3) can cause on Windows.
-//
-// Performance note for scale: all reads happen against the in-memory `state`
-// object (instant, never touches disk). Writes are queued and flushed to
-// disk asynchronously in the background, so a burst of requests (e.g. 300
-// students scanning around the same time) never blocks the event loop
-// waiting on disk I/O. If you outgrow this (multiple server instances behind
-// a load balancer, or need transactional guarantees), swap this file for a
-// real database like Postgres — the call signatures below are simple enough
-// to reimplement against any store.
-
 const fs = require('fs');
 const path = require('path');
 
@@ -48,14 +35,13 @@ function flush() {
   fs.writeFile(DB_FILE, snapshot, (err) => {
     if (err) console.error('DB write failed:', err);
     if (pendingWrite) {
-      flush(); // more changes arrived while we were writing — write again
+      flush();
     } else {
       writing = false;
     }
   });
 }
 
-// Flush synchronously on shutdown so nothing is lost.
 function flushSync() {
   try {
     fs.writeFileSync(DB_FILE, JSON.stringify(state));
@@ -102,7 +88,6 @@ const db = {
   },
 
   submissions: {
-    // Throws Error('DUPLICATE') if (sessionId, studentId) already exists.
     insert(sub) {
       const dup = Object.values(state.submissions).some(
         s => s.sessionId === sub.sessionId && s.studentId === sub.studentId
