@@ -11,8 +11,6 @@ export default function Display() {
   const [ended, setEnded] = useState(false);
   const [count, setCount] = useState(0);
 
-  // Keep the latest refresh function in a ref so the 1-second ticker
-  // (set up once) always calls the current version without re-subscribing.
   const refreshRef = useRef(() => {});
 
   useEffect(() => {
@@ -28,9 +26,7 @@ export default function Display() {
         }
         setQr(data.qr);
         setSecondsLeft(data.expiresInSeconds);
-      } catch (err) {
-        // transient network hiccup — the next tick will retry
-      }
+      } catch (err) {}
     }
 
     async function updateCount() {
@@ -39,9 +35,7 @@ export default function Display() {
         if (!res.ok) return;
         const data = await res.json();
         setCount(data.count);
-      } catch (err) {
-        // ignore, will retry
-      }
+      } catch (err) {}
     }
 
     refreshRef.current = refresh;
@@ -67,8 +61,8 @@ export default function Display() {
 
   if (!sessionId || !adminKey) {
     return (
-      <div className="display-page">
-        <h1 className="ended">Missing session info</h1>
+      <div className="min-h-screen bg-ada-blue-dark flex items-center justify-center p-4">
+        <p className="text-lg font-semibold text-ada-red">Missing session info</p>
       </div>
     );
   }
@@ -76,22 +70,54 @@ export default function Display() {
   const downloadUrl = `/api/sessions/${sessionId}/export?adminKey=${adminKey}`;
 
   return (
-    <div className="display-page">
+    <div className="min-h-screen bg-ada-blue-dark text-white flex flex-col items-center justify-center px-4 py-10 text-center">
+      <div className="mb-8 flex items-center gap-2">
+        <div className="h-8 w-8 rounded-md bg-white flex items-center justify-center text-ada-blue-dark font-bold text-xs">
+          ADA
+        </div>
+        <span className="text-sm font-medium text-slate-300 tracking-wide">University Attendance</span>
+      </div>
+
       {ended ? (
-        <h1 className="ended">Attendance Closed</h1>
+        <h1 className="text-3xl sm:text-4xl font-semibold text-ada-red">Attendance Closed</h1>
       ) : (
         <>
-          <h1>Scan to Mark Attendance</h1>
-          <div className="sub">QR code refreshes every 30 seconds — a screenshot won't work after that</div>
-          <div className="qr-box">{qr && <img src={qr} alt="QR code" />}</div>
-          <div className="bar-bg">
-            <div className="bar" style={{ width: `${(secondsLeft / 30) * 100}%` }} />
+          <h1 className="text-2xl sm:text-3xl font-semibold mb-2">Scan to Mark Attendance</h1>
+          <p className="text-sm text-slate-400 mb-8 max-w-xs">
+            QR code refreshes every 30 seconds — a screenshot won't work after that
+          </p>
+
+          <div className="bg-white p-5 rounded-2xl inline-block shadow-lg">
+            {qr && (
+              <img
+                src={qr}
+                alt="QR code"
+                className="w-64 h-64 sm:w-80 sm:h-80 max-w-[70vw] max-h-[70vw] block"
+              />
+            )}
           </div>
-          <div className="timer">New code in {secondsLeft}s</div>
+
+          <div className="w-64 sm:w-80 max-w-[70vw] h-1.5 bg-white/10 rounded-full mt-5 overflow-hidden">
+            <div
+              className="h-full bg-ada-red rounded-full transition-[width] duration-1000 ease-linear"
+              style={{ width: `${(secondsLeft / 30) * 100}%` }}
+            />
+          </div>
+          <p className="mt-4 text-sm text-slate-300 tabular-nums">New code in {secondsLeft}s</p>
         </>
       )}
-      <div className="count">{count} student(s) checked in</div>
-      <a className="download-btn" href={downloadUrl}>Download Excel</a>
+
+      <div className="mt-8 inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-4 py-1.5">
+        <span className="h-2 w-2 rounded-full bg-ada-red animate-pulse" />
+        <span className="text-sm text-slate-200">{count} student(s) checked in</span>
+      </div>
+
+      
+       <a href={downloadUrl}
+        className="mt-6 inline-flex items-center gap-2 rounded-lg bg-white text-ada-blue-dark px-6 py-2.5 text-sm font-semibold hover:bg-slate-100 transition"
+      >
+        Download Excel
+      </a>
     </div>
   );
 }
